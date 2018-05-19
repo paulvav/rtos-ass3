@@ -31,6 +31,7 @@ void *A();
 pthread_t tid1;
 pthread_attr_t attr;
 
+char * fifo = "fifo";
 
 
 
@@ -44,7 +45,6 @@ int main()
 
 void *A()
 {
-	char * fifo = "./fifo";
 	if (mkfifo(fifo, 0666) < 0)
 		printf("Error creating named pipe.\n");
 	else 
@@ -57,7 +57,7 @@ void *A()
 	int fd;	
 
 	//Open FIFO for write only proccess
-	fd = open(fifo, O_WRONLY);
+	//fd = open(fifo, O_WRONLY);
 
 	for (clock=0;clock<60;clock++)
 	{
@@ -95,12 +95,21 @@ void *A()
 		totalWait = totalWait + proccesses[proc].waitTime;		
 	}
 	averageWait = totalWait / sizeof(proccesses);
-	
+        fd=open(fifo, O_WRONLY);	
 	write(fd,(void *)&averageWait,100);
-	
+	close(fd);
 
 }
 
 void *B()
 {
+	char string[10];
+	int fd;
+	fd=open(fifo,ORDONLY);
+	read(fd,string,80);
+	printf("%s",string
+
+
+
+
 }
