@@ -50,7 +50,7 @@ int main()
 	pthread_attr_init(&attr);
 	pthread_create(&tid1,&attr,A,NULL);
 	pthread_create(&tid2,&attr,B,NULL);
-	pthread_join(tid1,NULL);
+	pthread_join(tid2,NULL);
 //	pthread_join(tid2,NULL);
 //	pthread_join(tid1,NULL);
 }
@@ -104,12 +104,15 @@ void *A()
 		totalWait = totalWait + proccesses[proc].waitTime;		
 	}
 	averageWait = totalWait / sizeof(proccesses);
-        if (fd=open(fifo, O_WRONLY) == -1)
+        while(1)
+	{
+	if (fd=open(fifo, O_WRONLY) == -1)
 		printf("PIPE OPEN ERROR");	
 
 	write(fd,"balls",strlen("balls"));
 	 
 	close(fd);
+	}
 	return;
 }
 
@@ -123,9 +126,9 @@ void *B()
 	while(1)
 	{
 	        fd = open(fifo,O_RDONLY);
-		read(fd,&string,5);
+		read(fd,&string,strlen("balls"));
 		printf("string: %s\n\n", string);
-		close(fd);
+		//close(fd);
 		if(string == "bls")
 			break;
 		//printf("%s",string);
