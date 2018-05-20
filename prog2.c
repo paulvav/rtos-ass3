@@ -4,8 +4,8 @@
 
 struct resources
 {
-	int A,B,C;
-};
+	char *A,*B,*C;
+} 
 
 FILE * fileName;
 void loadFile();
@@ -34,35 +34,66 @@ return lines;
 void loadFile()
 {
 	int line =0, column=0;
-	char *elementFromFile;
+	char *elementFromFile, *elementFromElement;
 	char *element, *subelement;
 	char *saveptr;
 	char lineFromFile[100];
 	int numberOfProc = numberOfLines();
 	printf("Number of Lines in file: %d",numberOfProc);
-	struct resources processes[numberOfProc];
+	struct resources Request[numberOfProc];
+	struct resources Allocation[numberOfProc];
+	struct resources Available[numberOfProc];
 	int initialise = 0;
+        elementFromFile = "";
+        elementFromElement = "";
 	
 	while(fgets(lineFromFile,1000,fileName))
 	{
-		if (strstr(lineFromFile,"P"))
-		{
-			initialise = 1;
-			elementFromFile = lineFromFile;
-		}
 	
+		column = 0;
+		if (strstr(lineFromFile,"P0"))
+		{
+			printf("P0FOUND\n\n\n");
+			initialise = 1;
+		}
+		elementFromFile = lineFromFile;	
 		element = strtok_r(elementFromFile,"\t",&elementFromFile);
+		
 		
 		while (element != NULL && initialise == 1)
 		{
-			printf(" %s ", element);
-			
+			//printf("%s,", element);
 			element = strtok_r(elementFromFile,"\t",&elementFromFile);
 			
-			column = column + 1;
-			if(column == 3)
-				column = 0;
+
+		        ///printf("\n\n\n");
+				
+			elementFromElement = element;
+				
+     	
+			
+			if (column == 0)
+				{
+					Allocation[line].A = strtok_r(elementFromElement," ",&elementFromElement);
+					Allocation[line].B = strtok_r(elementFromElement," ",&elementFromElement);
+					Allocation[line].C = strtok_r(elementFromElement," ",&elementFromElement);
+			        }
+			else if (column ==1)
+				{
+					Request[line].A = strtok_r(elementFromElement," ",&elementFromElement);
+					Request[line].B = strtok_r(elementFromElement," ",&elementFromElement);
+					Request[line].C = strtok_r(elementFromElement," ",&elementFromElement);
+				
+				}
+				
+				
+			
+				printf("\n");		
+//			}
+			
+	        column = column + 1;		
 		}
+		line = line + 1;
 
 	}
 }
