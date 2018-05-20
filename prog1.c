@@ -48,8 +48,9 @@ int main()
 
 	
 	pthread_attr_init(&attr);
-	pthread_create(&tid1,&attr,A,NULL);
+//	pthread_create(&tid1,&attr,A,NULL);
 	pthread_create(&tid2,&attr,B,NULL);
+	pthread_create(&tid1,&attr,A,NULL);
 	pthread_join(tid2,NULL);
 //	pthread_join(tid2,NULL);
 //	pthread_join(tid1,NULL);
@@ -67,6 +68,7 @@ void *A()
         printf("Thread A FLAG\n\n");
 	//Open FIFO for write only proccess
 	//fd = open(fifo, O_WRONLY);
+
 
 	for (clock=0;clock<10;clock++)
 	{
@@ -106,11 +108,18 @@ void *A()
 	averageWait = totalWait / sizeof(proccesses);
         while(1)
 	{
+//	printf("Thread A is opening the pipe");
+//	printf("for real \n yo");
 	if (fd=open(fifo, O_WRONLY) == -1)
 		printf("PIPE OPEN ERROR");	
-
-	write(fd,"balls",strlen("balls"));
-	 
+//	printf("total wait: %d", totalWait);
+	if (write(fd,"balls",strlen("balls"))<0)
+		printf("write failed");
+	else
+	{   printf("write sucecss");
+        //  close(fd);
+	   break; 
+	}
 	close(fd);
 	}
 	return;
@@ -118,21 +127,23 @@ void *A()
 
 void *B()
 {
-	char string[10];
+	char string[50];
 	int fd;
 	printf("THread B baby\n\n");
-	//fd = open(fifo,O_RDONLY);
-	
-	while(1)
-	{
-	        fd = open(fifo,O_RDONLY);
+	fd = open(fifo,O_RDONLY);
+        	
+//	while(1)
+//	{
+		printf("we are at lopo in B");
+	//        fd = open(fifo,O_RDONLY);
 		read(fd,&string,strlen("balls"));
-		printf("string: %s\n\n", string);
-		//close(fd);
-		if(string == "bls")
-			break;
+//		printf("string: %s\n\n", string);
+       		close(fd);
+		printf("string: %s",string);
+		//if(string == "bls")
+		//	break;
 		//printf("%s",string);
-	}
+//	}
 return;
 
 
