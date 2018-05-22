@@ -199,8 +199,11 @@ int deadlockDetector(struct resource * process)
 				for(proc = 0; proc < numOfLines; proc++)
 				{
 					if(process[proc].done==0)
+					{
 						fprintf(outputFile," %s",process[proc].id);
-				
+					
+						printf("%d %d %d| %d %d %d", process[proc].Req[0],process[proc].Req[1],process[proc].Req[2],avail[0],avail[1],avail[2]);
+					}
 				}
 			break;
 			}
