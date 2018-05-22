@@ -197,6 +197,11 @@ int deadlockDetector(struct resource * process)
 			//if done count has been the same twice - indicates completion
 			else if(doneCount == previousDoneCount)
 			{
+			        //delete partially complete - nondeadlock file, reset, make deadlock file
+			        fclose(outputFile);
+			    	outputFile = fopen(argv[2],"w");
+	                fclose(outputFile);
+	                outputFile = fopen(argv[2],"a");
 				
 				//print processes in deadlock to file
 				for(proc = 0; proc < numOfLines+1; proc++)
@@ -204,9 +209,8 @@ int deadlockDetector(struct resource * process)
 					
 					if(process[proc].done==0)
 					{
+					    //print deadlock process to deadlock file
 						fprintf(outputFile," %s",process[proc].id);
-							
-						printf("%d %d %d| %d %d %d", process[proc].Req[0],process[proc].Req[1],process[proc].Req[2],avail[0],avail[1],avail[2]);
 					}
 				}
 			break;
