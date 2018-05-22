@@ -99,7 +99,7 @@ void getProcessFromFile()
         int linestotal = numberOfLines();
 
 	//Initialising process struct
-	struct resource process[linestotal];
+	struct resource process[linestotal+1];
 	
 	while(fgets(lineFromFile,1000,fileName))
         {			
@@ -108,7 +108,7 @@ void getProcessFromFile()
 		if (initialise==1)
 		{
 			sscanf(lineFromFile,"%s%d%d%d%d%d%d",process[proc].id,&process[proc].Allo[0],&process[proc].Allo[1],&process[proc].Allo[2],&process[proc].Req[0],&process[proc].Req[1],&process[proc].Req[2]);	
-			process[0].done = 0;
+			process[proc].done = 0;
 			proc = proc + 1;
 		}		
 		
@@ -117,7 +117,7 @@ void getProcessFromFile()
         	{
           		sscanf(lineFromFile,"%s%d%d%d%d%d%d%d%d%d",process[proc].id,&process[proc].Allo[0],&process[proc].Allo[1],&process[proc].Allo[2],&process[proc].Req[0],&process[proc].Req[1],&process[proc].Req[2],&avail[0],&avail[1],&avail[2]);
 	  
-	 	 	process[proc].done=0;
+	 	 	process[0].done=0;
 	  		proc = proc + 1;
           		initialise = 1;
         	}	
@@ -145,6 +145,7 @@ int deadlockDetector(struct resource * process)
 	int unAvail;
         int numOfLines = numberOfLines();
 	
+	
 	//Loop runs until finish flag is set
 	while(1)
 	{
@@ -169,12 +170,15 @@ int deadlockDetector(struct resource * process)
 				//set done flag
 				process[proc].done = 1;
 				
+				fprintf(outputFile,"%s",process[proc].id);
 				//add allocation resources to available
 				for(resourceID = 0; resourceID<3;resourceID++)
 				{
 					avail[resourceID] = avail[resourceID] + process[proc].Allo[resourceID];
 				}
+			    proc = 0;
 			}
+		    
 		}
 			
 		//if the process is done increment done count
@@ -193,15 +197,15 @@ int deadlockDetector(struct resource * process)
 			//if done count has been the same twice - indicates completion
 			else if(doneCount == previousDoneCount)
 			{
-				fprintf(outputFile, "\nDEADLOCK DETECTED: ");
 				
 				//print processes in deadlock to file
-				for(proc = 0; proc < numOfLines; proc++)
+				for(proc = 0; proc < numOfLines+1; proc++)
 				{
+					
 					if(process[proc].done==0)
 					{
 						fprintf(outputFile," %s",process[proc].id);
-					
+							
 						printf("%d %d %d| %d %d %d", process[proc].Req[0],process[proc].Req[1],process[proc].Req[2],avail[0],avail[1],avail[2]);
 					}
 				}
